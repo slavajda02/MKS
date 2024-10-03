@@ -301,27 +301,41 @@ static void blink(){
 }
 
 static void button(){
-	static uint32_t prevStatusS1;
+	//static uint32_t prevStatusS1;
 	static uint32_t prevStatusS2;
 	static uint32_t offTime;
+	static uint32_t prevTick;
+	static uint32_t prevTick2;
 
-	uint32_t currentStatusS1 = LL_GPIO_IsInputPinSet(S2_GPIO_Port, S2_Pin);
-	uint32_t currentStatusS2 = LL_GPIO_IsInputPinSet(S1_GPIO_Port, S1_Pin);
-
+	//Debounce
+	static uint16_t debounce = 0xFFFF;
+	if (tick > prevTick + 5) {
+		debounce <<= 1;
+		if(!LL_GPIO_IsInputPinSet(S1_GPIO_Port, S1_Pin)){
+			debounce |= 0x0001;
+		}
+		prevTick = tick;
+	}
 	//Handles button S1
-	if (prevStatusS1 && !currentStatusS1) {
+	if (debounce == 0x7FFF) {
 		offTime = tick + LED_TIME_SHORT;
 		LL_GPIO_SetOutputPin(LED2_GPIO_Port, LED2_Pin);
 	}
 
-	//Handles button S2
-	if (prevStatusS2 && !currentStatusS2) {
+
+	//uint32_t currentStatusS1 = LL_GPIO_IsInputPinSet(S1_GPIO_Port, S1_Pin);
+	if (tick > prevTick2 + 40){
+		uint32_t currentStatusS2 = LL_GPIO_IsInputPinSet(S2_GPIO_Port, S2_Pin);
+
+		//Handles button S2
+		if (prevStatusS2 && !currentStatusS2) {
 			offTime = tick + LED_TIME_LONG;
 			LL_GPIO_SetOutputPin(LED2_GPIO_Port, LED2_Pin);
 		}
-
-	prevStatusS1 = currentStatusS1;
-	prevStatusS2 = currentStatusS2;
+		//prevStatusS1 = currentStatusS1;
+		prevTick2 = tick;
+		prevStatusS2 = currentStatusS2;
+	}
 
 	if (tick > offTime) {
 		LL_GPIO_ResetOutputPin(LED2_GPIO_Port, LED2_Pin);
