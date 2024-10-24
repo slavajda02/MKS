@@ -23,6 +23,7 @@
 /* USER CODE BEGIN Includes */
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -35,6 +36,7 @@
 #define	RX_BUFFER_LEN	64
 #define CMD_BUFFER_LEN 256
 #define uart_rx_write_ptr (RX_BUFFER_LEN - hdma_usart2_rx.Instance->CNDTR)
+#define EEPROM_ADDR 0xA0
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -66,6 +68,9 @@ static void HELLO();
 static void LED1(uint8_t param);
 static void LED2(uint8_t param);
 static void STATUS();
+static void read(uint32_t addr);
+static void write(uint32_t addr, uint8_t value);
+static void dump();
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -340,29 +345,55 @@ static void uart_byte_available(uint8_t c){
 }
 
 static void uart_process_command(char *cmd){
-	printf("received: '%s'\n", cmd);
+	//printf("received: '%s'\n", cmd);
 	char *token;
+	char *param;
+	char *value;
 	token = strtok(cmd, " ");
+	param = strtok(NULL, " ");
+	// Welcome print
 	if (strcasecmp(token, "HELLO") == 0) {
 		HELLO();
+	}
 
-	} else if (strcasecmp(token, "LED1") == 0) {
-		token = strtok(NULL, " ");
-		if (strcasecmp(token, "ON") == 0) {
+	// LED 1
+	else if (strcasecmp(token, "LED1") == 0) {
+		if (strcasecmp(param, "ON") == 0) {
 			LED1(1);
-		} else if (strcasecmp(token, "OFF") == 0) {
+		} else if (strcasecmp(param, "OFF") == 0) {
 			LED1(0);
 		}
 
-	} else if (strcasecmp(token, "LED2") == 0) {
-		token = strtok(NULL, " ");
-		if (strcasecmp(token, "ON") == 0) {
+	}
+
+	// LED 2
+	else if (strcasecmp(token, "LED2") == 0) {
+		if (strcasecmp(param, "ON") == 0) {
 			LED2(1);
-		} else if (strcasecmp(token, "OFF") == 0) {
+		} else if (strcasecmp(param, "OFF") == 0) {
 			LED2(0);
 		}
-	} else if (strcasecmp(token, "STATUS") == 0){
+	}
+
+	// LED status
+	else if (strcasecmp(token, "STATUS") == 0){
 		STATUS();
+	}
+
+	//EEPROM Read
+	else if (strcasecmp(token, "READ")){
+		read(atoi(param));
+	}
+
+	//EEPROM Write
+	else if (strcasecmp(token, "READ")){
+		value = strtok(NULL, " ");
+		write(atoi(param), atoi(value));
+	}
+
+	//EEPROM Dump
+	else if (strcasecmp(token, "DUMP")){
+		dump();
 	}
 }
 
@@ -388,6 +419,26 @@ static void STATUS(){
 	uint8_t led1 = HAL_GPIO_ReadPin(LED1_GPIO_Port, LED1_Pin);
 	uint8_t led2 = HAL_GPIO_ReadPin(LED2_GPIO_Port, LED2_Pin);
 	printf("LED 1 :  %i, LED 2 : %i \n", led1, led2);
+}
+
+/*
+ * Implement commands for working with EEPROM to the communication protocol:
+ * The READ command reads the specified address from memory and prints its contents.
+ * The WRITE command writes the specified value to the specified memory address. It waits for the operation to complete and confirms execution.
+ * The DUMP command hexadecimally prints the values at addresses 0x0000 to 0x000F.
+ */
+static void read(uint32_t addr){
+	uint8_t value;
+	HAL_I2C_Mem_Read(&hi2c1, EEPROM_ADDR, addr, I2C_MEMADD_SIZE_16BIT, &value, 1, 1000);
+	sprintf("Address %X = %X", addr, value);
+}
+
+static void write(uint32_t addr, uint8_t value){
+	HAL_I2C_Mem_Write(&hi2c1, EEPROM_ADDR, addr, I2C_MEMADD_SIZE_16BIT, &value, 1, 1000);
+}
+
+static void dump(){
+
 }
 
 /* USER CODE END 4 */
