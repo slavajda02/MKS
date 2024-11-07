@@ -1,0 +1,37 @@
+11:16:56 **** Incremental Build of configuration Debug for project cv7 ****
+make -j4 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m0 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F030x8 -c -I../Core/Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F0xx/Include -I../Drivers/CMSIS/Include -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM0 -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/main.o"
+../Core/Src/main.c:57:22: warning: initialization of 'int32_t (*)(void *, uint8_t,  const uint8_t *, uint16_t)' {aka 'long int (*)(void *, unsigned char,  const unsigned char *, short unsigned int)'} from incompatible pointer type 'int32_t (*)(void *, uint8_t,  uint8_t *, uint16_t)' {aka 'long int (*)(void *, unsigned char,  unsigned char *, short unsigned int)'} [-Wincompatible-pointer-types]
+   57 |         .write_reg = platform_write,
+      |                      ^~~~~~~~~~~~~~
+../Core/Src/main.c:57:22: note: (near initialization for 'lis2dw12.write_reg')
+../Core/Src/main.c: In function 'StartAcceleroT':
+../Core/Src/main.c:428:43: warning: pointer targets in passing argument 2 of 'lis2dw12_device_id_get' differ in signedness [-Wpointer-sign]
+  428 |         lis2dw12_device_id_get(&lis2dw12, &whoamI);
+      |                                           ^~~~~~~
+      |                                           |
+      |                                           int8_t * {aka signed char *}
+In file included from ../Core/Src/main.c:25:
+../Core/Inc/lis2dw12_reg.h:790:66: note: expected 'uint8_t *' {aka 'unsigned char *'} but argument is of type 'int8_t *' {aka 'signed char *'}
+  790 | int32_t lis2dw12_device_id_get(const stmdev_ctx_t *ctx, uint8_t *buff);
+      |                                                         ~~~~~~~~~^~~~
+../Core/Src/main.c:444:17: warning: unused variable 'i' [-Wunused-variable]
+  444 |         uint8_t i = 0;
+      |                 ^
+../Core/Src/main.c:443:17: warning: unused variable 'msg' [-Wunused-variable]
+  443 |         int16_t msg;
+      |                 ^~~
+arm-none-eabi-gcc -o "cv7.elf" @"objects.list"   -mcpu=cortex-m0 -T"C:\Temp\240648\MKS\cv7\cv7\STM32F030R8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="cv7.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: cv7.elf
+ 
+arm-none-eabi-size  cv7.elf 
+arm-none-eabi-objdump -h -S cv7.elf  > "cv7.list"
+   text	   data	    bss	    dec	    hex	filename
+  26616	    124	   6284	  33024	   8100	cv7.elf
+Finished building: default.size.stdout
+ 
+Finished building: cv7.list
+ 
+
+11:16:58 Build Finished. 0 errors, 4 warnings. (took 1s.334ms)
+
