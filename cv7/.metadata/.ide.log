@@ -1897,3 +1897,4 @@
 2024-11-07 10:45:03,191 [INFO] ProjectBuilder:3107 - Time for Copy CMSIS : 4mS.
 2024-11-07 10:45:03,225 [INFO] ProjectBuilder:3107 - Time for Copy CMSIS : 0mS.
 2024-11-07 10:45:11,636 [INFO] I2cTimingTraitement:330 - 0x00201D2B
+2024-11-07 11:19:24,704 [INFO] WebApp:388 - JxBrowser engine has been closed 
