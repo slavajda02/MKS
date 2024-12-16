@@ -55,8 +55,6 @@ UART_HandleTypeDef huart3;
 /* USER CODE BEGIN PV */
 static volatile char key;
 static const char password[] = {'2','5','8','0','#'};
-uint32_t lastPress = 0;
-uint8_t keyPressed = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -118,14 +116,16 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1){
-
 	  printf("Ready\n");
+	  static uint32_t lastPress = 0;
+	  static uint8_t keyPressed = 0;
 	  static uint8_t correct_pos;
+
 	  if (key != 0) {
 		  keyPressed = 1;
 		  lastPress = HAL_GetTick();
 		  printf("pressed '%c'\n", key);
-		  HAL_Delay(200);
+		  HAL_Delay(250);
 
 		  if(key == password[correct_pos]){
 			  correct_pos++;
@@ -153,10 +153,6 @@ int main(void)
 		  correct_pos = 0;
 
 	  }
-	    /* USER CODE END 2 */
-
-	    /* Infinite loop */
-	    /* USER CODE BEGIN WHILE */
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -453,7 +449,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 		if (HAL_GPIO_ReadPin(Col4_GPIO_Port, Col4_Pin) == GPIO_PIN_RESET) {
 			key = keyboard[row][3];
 		}
-		// ...etc...
 	}
 	HAL_GPIO_WritePin(Row1_GPIO_Port, Row1_Pin, GPIO_PIN_SET);
 	HAL_GPIO_WritePin(Row2_GPIO_Port, Row2_Pin, GPIO_PIN_SET);
@@ -476,7 +471,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 		row = 0;
 		HAL_GPIO_WritePin(Row1_GPIO_Port, Row1_Pin, GPIO_PIN_RESET);
 		break;
-		// ...etc...
 	}
 }
 
