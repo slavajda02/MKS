@@ -116,30 +116,30 @@ int main(void)
 	  static uint32_t delayTime = 0;
 	  static uint32_t prevTick = 0;
 	  static uint32_t prevTickKITT = 0;
-	  static uint8_t kitt_pos = 0;
-	  static uint8_t kitt_dir = 1;
+	  static uint8_t kittPos = 0;
+	  static uint8_t kittDir = 1;
 
 	  // Rescale the potentiometer value to 20-500 from 0-4095
-	  delayTime = raw_pot* 480 /4095 + 20;
+	  delayTime = raw_pot* 480.9 /4095 + 20;
 
 	  // Display the delay value on the display
 	  if (HAL_GetTick() > prevTick + displayDelay) {
-		  sct_value(delayTime, kitt_pos);
+		  sct_value(delayTime, kittPos);
 		  prevTick = HAL_GetTick();
 	  }
 
 	  // Knight Rider effect, Increments then decrements back to 0
 	  if (HAL_GetTick() > prevTickKITT + delayTime){
-		  sct_value(delayTime, kitt_pos);
-		  if(kitt_dir == 1) {
-			  kitt_pos++;
-			  if(kitt_pos == 9) {
-				  kitt_dir = 0;
+		  sct_value(delayTime, kittPos);
+		  if(kittDir == 1) {
+			  kittPos++;
+			  if(kittPos == 9) {
+				  kittDir = 0;
 			  }
 		  } else {
-			  kitt_pos--;
-			  if(kitt_pos == 0) {
-				  kitt_dir = 1;
+			  kittPos--;
+			  if(kittPos == 0) {
+				  kittDir = 1;
 			  }
 		  }
 		  prevTickKITT = HAL_GetTick();
