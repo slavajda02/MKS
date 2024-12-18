@@ -52,7 +52,6 @@ UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
 static volatile uint32_t raw_pot, raw_volt, raw_temp;
-+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
